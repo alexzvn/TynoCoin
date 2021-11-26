@@ -1,0 +1,30 @@
+{
+  "name": "tynocoin",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.ts",
+  "scripts": {
+    "clean": "rimraf dist",
+    "start:server": "ts-node -r tsconfig-paths/register main.ts",
+    "start:miner": "ts-node -r tsconfig-paths/register miner.ts",
+    "dev": "nodemon --watch src --watch main.ts main.ts --exec \"npm run start\"",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/elliptic": "^6.4.14",
+    "@types/node": "^16.11.10",
+    "nodemon": "^2.0.15",
+    "ts-node": "^10.4.0",
+    "tsconfig-paths": "^3.12.0",
+    "typescript": "^4.5.2"
+  },
+  "dependencies": {
+    "dat-swarm-defaults": "^1.0.2",
+    "discovery-swarm": "^6.1.0",
+    "elliptic": "^6.5.4",
+    "get-port": "^6.0.0",
+    "portfinder": "^1.0.28"
+  }
+}
