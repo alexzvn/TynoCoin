@@ -9,6 +9,7 @@ export interface GenesisBlock {
   data: any
   nonce: number
   hash: string
+  height: number
 }
 
 export interface ChainBlock extends GenesisBlock {
@@ -21,7 +22,8 @@ export class Block implements ChainBlock {
   constructor(
     public data: any,
     public readonly previousHash: string,
-    public nonce: number = 0
+    public nonce: number = 0,
+    public height: number = 0
   ) {}
 
   public toObject(): ChainBlock {
@@ -29,24 +31,24 @@ export class Block implements ChainBlock {
   }
 
   public preSerialize(): string {
-    const { timestamp, data, nonce, previousHash } = this
+    const { timestamp, data, nonce, previousHash, height } = this
 
-    return JSON.stringify({ previousHash, data, nonce, timestamp })
+    return JSON.stringify({ previousHash, data, nonce, timestamp, height })
   }
 
   public serialize(): string {
-    const { timestamp, data, nonce, previousHash } = this
+    const { timestamp, data, nonce, previousHash, height } = this
 
-    return JSON.stringify({ previousHash, data, nonce, timestamp, hash: this.hash })
+    return JSON.stringify({ previousHash, data, nonce, timestamp, hash: this.hash, height })
   }
 
   public static deserialize(data: string): Block {
-    const { timestamp, data: dataString, nonce, previousHash } = JSON.parse(data)
-    return this.fromObject({ timestamp, data: dataString, nonce, previousHash } as any)
+    const { timestamp, data: dataString, nonce, previousHash, height } = JSON.parse(data)
+    return this.fromObject({ timestamp, data: dataString, nonce, previousHash, height } as any)
   }
 
   public static fromObject(obj: ChainBlock): Block {
-    const block = new Block(obj.data, obj.previousHash, obj.nonce)
+    const block = new Block(obj.data, obj.previousHash, obj.nonce, obj.height)
 
     block.timestamp = obj.timestamp
 
@@ -64,9 +66,9 @@ export class MiningBlock extends Block {
   constructor(
     data: any,
     previousHash: string,
-    nonce: number = 0,
+    height: number = 0
   ) {
-    super(data, previousHash, nonce)
+    super(data, previousHash, 0, height)
   }
 
   public async mine(difficulty: number) {

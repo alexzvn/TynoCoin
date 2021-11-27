@@ -6,19 +6,15 @@ import { Block } from './Block'
 export class ChainIO {
   protected chain = new Chain([])
 
-  protected writer: fs.WriteStream
-
   protected ready = false
 
   constructor (public readonly blockchainFile: string) {
     fs.existsSync(this.blockchainFile) || fs.writeFileSync(this.blockchainFile, '')
-
-    this.writer = fs.createWriteStream(this.blockchainFile, { flags: 'a' })
   }
 
   public async load () {
     await this.loopThroughChain(block => {
-      this.add(block)
+      this.chain.push(block)
     })
 
     this.ready = true
@@ -28,7 +24,8 @@ export class ChainIO {
     fs.writeFileSync(this.blockchainFile, '')
 
     await this.loopThroughChain(block => {
-      this.add(block)
+      this.chain.push(block)
+      this.append(block)
     }, file)
 
     this.ready = true
@@ -48,26 +45,30 @@ export class ChainIO {
       const block = Block.deserialize(line)
       callback(block)
     }
+
+    stream.close()
   }
 
-  public add(block: Block): boolean {
+  public add(block: Block) {
     if (!this.ready) {
       throw new Error('Chain is not ready')
     }
 
+    console.log('Adding block', block.hash);
+
     this.chain.push(block)
-
-    if (this.chain.isValid()) {
-      this.writer.write(block.serialize() + '\n')
-      return true
-    }
-
-    this.chain.pop()
-    return false
+    this.append(block)
   }
 
-  public addWithFile(block: Block) {
-    this.chain.push(block)
-    this.writer.write(block.serialize() + '\n')
+  latest() {
+    return this.chain.getLast()
+  }
+
+  get length () {
+    return this.chain.length
+  }
+
+  protected append (block: Block) {
+    fs.appendFileSync(this.blockchainFile, block.serialize() + '\n')
   }
 }

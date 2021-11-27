@@ -1,8 +1,15 @@
-import Peer from '~/net/Peer'
+import path = require('path')
+import BlockchainNetwork from '~/BlockchainNetwork'
+import { Block } from '~/chain/Block'
+import { ChainIO } from '~/chain/ChainIO'
+import BlockchainPeer from '~/net/BlockchainPeer'
+import WalletBalance, { WalletWatcher } from '~/net/WalletBalance'
 
-const peer = new Peer('main', 5431)
+const network = new BlockchainNetwork(
+  new ChainIO(path.join(__dirname, 'blockchain.dat')),
+  new BlockchainPeer('main', 5431),
+)
 
-peer.on('connection', (con: any, info: any) => {
-  console.log('Main: connection', con, info);
+network.start().then(() => {
+  network.maintain()
 })
-

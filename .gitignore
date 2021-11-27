@@ -2,3 +2,4 @@ node_modules
 yarn*
 config.ts
 .DS_Store
+*.dat

@@ -7,7 +7,7 @@ const id = randomBytes(30)
 export default class Peer {
   public readonly id = randomBytes(30)
 
-  protected sw = Swarm(defaults({ id }))
+  public readonly sw = Swarm(defaults({ id }))
 
   constructor(channel: string, port: number) {
     this.sw.listen(port)
