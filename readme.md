@@ -1,2 +1,2 @@
-# Tyno, A (Ty)pescript (No)de Blockchain
+# Tyno, A Ty**pescript Node Blockchain
 
